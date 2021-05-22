@@ -12,6 +12,9 @@ target 'DoitClientApp' do
     :hermes_enabled => false
   )
 
+
+  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
+
   target 'DoitClientAppTests' do
     inherit! :complete
     # Pods for testing

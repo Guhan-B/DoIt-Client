@@ -50,7 +50,7 @@ const MyLogsTab = ({ openModel }) => {
                         <Text style={{
                             fontFamily: 'Lato-Bold',
                             fontSize: 16,
-                            color: '#222222',
+                            color: '#2d3436',
                             marginBottom: 5
                         }}>
                             {item.name}
@@ -58,7 +58,7 @@ const MyLogsTab = ({ openModel }) => {
                         <Text style={{
                             fontFamily: 'Lato-Bold',
                             fontSize: 14,
-                            color: '#0073CF',
+                            color: '#6c5ce7',
                             marginBottom: 12
                         }}>
                             {item.tasks.length} Tasks
@@ -66,7 +66,7 @@ const MyLogsTab = ({ openModel }) => {
                         <Text style={{
                             fontFamily: 'Lato-Regular',
                             fontSize: 13,
-                            color: '#828282',
+                            color: '#636e72',
                             marginBottom: 16,
                             lineHeight: 17
                         }}>
@@ -75,7 +75,7 @@ const MyLogsTab = ({ openModel }) => {
                         <Text style={{
                             fontFamily: 'Lato-Bold',
                             fontSize: 12,
-                            color: '#555',
+                            color: '#636e72',
                             textAlign: 'right',
                             marginBottom: 6
                         }}>34%</Text>
@@ -100,21 +100,21 @@ const styles = StyleSheet.create({
     progress_bar: {
         height: 4,
         width: '100%',
-        backgroundColor: '#E5E5E5',
+        backgroundColor: '#dfe6e9',
         borderRadius: 10,
         overflow: 'hidden'
     },
     progress: {
         height: 4,
         width: '40%',
-        backgroundColor: '#89CBFF',
+        backgroundColor: '#a29bfe',
         borderRadius: 10,
     },
     add_log_button: {
         position: 'absolute',
         bottom: 30,
         right: 20,
-        backgroundColor: '#0073CF',
+        backgroundColor: '#6c5ce7',
         width: 60,
         height: 60,
         borderRadius: 30,

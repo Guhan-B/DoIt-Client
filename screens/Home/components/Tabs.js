@@ -22,9 +22,9 @@ const Tabs = ({ openModel }) => {
     const renderTabBar = (props) => {
         return <TabBar
             {...props}
-            indicatorStyle={{ backgroundColor: '#0073CF' }}
-            activeColor='#0073CF'
-            inactiveColor='#aeaeae'
+            indicatorStyle={{ backgroundColor: '#6c5ce7' }}
+            activeColor='#6c5ce7'
+            inactiveColor='#b2bec3'
             labelStyle={{
                 fontFamily: 'Lato-Bold',
                 fontSize: 13

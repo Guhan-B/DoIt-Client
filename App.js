@@ -4,11 +4,11 @@ import {
   Text
 } from 'react-native';
 
-import HomeScreen from './screens/Home/Home';
+import AppNavigator from './navigation/AppNavigator';
 
 const App = () => {
   return (
-    <HomeScreen/>
+    <AppNavigator />
   );
 }
 

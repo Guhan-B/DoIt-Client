@@ -9,16 +9,9 @@ import {
 import Modal from 'react-native-raw-bottom-sheet';
 
 const AddLogModal = ({ setRef,close }) => {
-    const [titleInputColor, setTitleInputColor] = useState('#e0e0e0');
-    const [titleLabelColor, setTitleLabelColor] = useState('#666666');
-    const [descInputColor, setDescInputColor] = useState('#e0e0e0');
-    const [descLabelColor, setDescLabelColor] = useState('#666666');
+
 
     const callClose = () => {
-        setDescInputColor('#e0e0e0'); 
-        setDescLabelColor('#555555');
-        setTitleInputColor('#e0e0e0'); 
-        setTitleLabelColor('#555555');
         close();
     }
 
@@ -31,10 +24,10 @@ const AddLogModal = ({ setRef,close }) => {
             height={400}
         >
             <View style={{ marginBottom: 16, marginTop: 16 }}>
-                <Text style={{ marginBottom: 6, fontFamily: 'Lato-Bold', color: titleLabelColor }}>Title</Text>
+                <Text style={{ marginBottom: 8, fontFamily: 'Lato-Bold', color: '#555555' }}>Title</Text>
                 <TextInput
                     style={{
-                        borderColor: titleInputColor,
+                        borderColor: '#e0e0e0',
                         borderWidth: 1,
                         borderRadius: 8,
                         paddingHorizontal: 12,
@@ -42,14 +35,12 @@ const AddLogModal = ({ setRef,close }) => {
                         fontFamily: 'Lato-Regular',
                         color: '#222',
                     }}
-                    onFocus={() => { setTitleInputColor('#89CBFF'); setTitleLabelColor('#89CBFF'); }}
-                    onBlur={() => { setTitleInputColor('#e0e0e0'); setTitleLabelColor('#555555'); }}
                 />
             </View>
             <View>
-                <Text style={{ marginBottom: 6, fontFamily: 'Lato-Bold', color: descLabelColor }}>Description</Text>
+                <Text style={{ marginBottom: 8, fontFamily: 'Lato-Bold', color: '#555555' }}>Note</Text>
                 <TextInput
-                    selectionColor="#89CBFF"
+                    selectionColor="#a29bfe"
                     autoCompleteType="off"
                     underlineColorAndroid="transparent"
                     spellCheck={false}
@@ -57,7 +48,7 @@ const AddLogModal = ({ setRef,close }) => {
                     maxLength={120}
                     numberOfLines={5}
                     style={{
-                        borderColor: descInputColor,
+                        borderColor: '#e0e0e0',
                         borderWidth: 1,
                         borderRadius: 8,
                         paddingHorizontal: 12,
@@ -66,8 +57,6 @@ const AddLogModal = ({ setRef,close }) => {
                         color: '#222',
                         textAlignVertical: 'top'
                     }}
-                    onFocus={() => { setDescInputColor('#89CBFF'); setDescLabelColor('#89CBFF'); }}
-                    onBlur={() => { setDescInputColor('#e0e0e0'); setDescLabelColor('#555555'); }}
                     keyboardType="ascii-capable"
                 />
                 <Text style={{ fontFamily: 'Lato-Regular', fontSize: 11, textAlign: 'right', marginTop: 5, color: '#555' }}>
@@ -92,7 +81,7 @@ const styles = StyleSheet.create({
         marginTop: 32
     },
     primary_button: {
-        backgroundColor: '#0073CF',
+        backgroundColor: '#6c5ce7',
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',

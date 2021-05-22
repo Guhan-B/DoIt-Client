@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 import Tabs from './components/Tabs';
-import AddLogModal from './components/AddLogModal'; 
+import AddLogModal from './components/AddLogModal';
 
 import ThreeDots from '../../assets/icons/ThreeDots.png';
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
@@ -32,12 +32,6 @@ const Home = () => {
         <>
             <View style={styles.screen}>
                 <View style={styles.home_header}>
-                    <View style={styles.navbar}>
-                        <Text style={styles.screen_name}>Home</Text>
-                        <TouchableOpacity style={styles.more_button} onPress={() => modelRef.open()}>
-                            <Image source={ThreeDots} style={{ width: 5, height: 18 }} resizeMode="contain" />
-                        </TouchableOpacity>
-                    </View>
                     <View style={styles.header_greeting}>
                         <Image source={{ uri: IMAGE_URL }} style={styles.profile_image} />
                         <View style={styles.welcome_text}>
@@ -50,14 +44,10 @@ const Home = () => {
                     <Tabs openModel={openAddLogModel} />
                 </View>
             </View>
-            <AddLogModal setRef={setModelRef} close={closeAddLogModel}/>
+            <AddLogModal setRef={setModelRef} close={closeAddLogModel} />
         </>
     );
 }
-
-
-
-
 
 const styles = StyleSheet.create({
     screen: {
@@ -67,9 +57,9 @@ const styles = StyleSheet.create({
     },
     home_header: {
         width: WIDTH,
-        backgroundColor: '#0073CF',
+        backgroundColor: '#6c5ce7',
         paddingHorizontal: 12,
-        paddingBottom: 28
+        paddingVertical: 28
     },
     home_body: {
         width: WIDTH,
@@ -92,14 +82,14 @@ const styles = StyleSheet.create({
         marginBottom: 6
     },
     greeting_text: {
-        color: '#F4F4F4dd',
+        color: '#dfe6e9',
         fontFamily: 'Lato-Regular',
         fontSize: 16
     },
     header_greeting: {
         flexDirection: 'column',
         alignItems: 'center',
-        marginTop: 18
+        // marginTop: 18
     },
     screen_name: {
         color: '#f4f4f4',
@@ -107,10 +97,12 @@ const styles = StyleSheet.create({
         fontSize: 17
     },
     navbar: {
-        paddingVertical: 16,
+        paddingVertical: 12,
+        paddingHorizontal: 12,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        backgroundColor: '#6c5ce7'
     },
     more_button: {
         width: 15,
