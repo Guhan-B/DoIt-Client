@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
     StyleSheet,
     Text,
@@ -6,17 +6,19 @@ import {
     TouchableOpacity,
     Image,
     SectionList,
-    Animated
+    Animated,
+    LogBox
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import AddTaskModal from './components/AddTaskModal';
+import MoreModal from './components/MoreModal';
 import TaskListItem from './components/TaskListItem';
-
-import ThreeDots from '../../assets/icons/ThreeDotsBlack.png';
 import Plus from '../../assets/icons/Plus.png';
+import ThreeDotsBlack from '../../assets/icons/ThreeDotsBlack.png';
+import BackBlack from '../../assets/icons/BackArrowBlack.png';
 
 
-const AddButton = Animated.createAnimatedComponent(TouchableOpacity);
 const DATA = [
     {
         title: "Pending",
@@ -81,32 +83,60 @@ const DATA = [
 ];
 
 const Tasks = () => {
-    const y = useRef(new Animated.Value(0)).current;
+    const AddButton = Animated.createAnimatedComponent(TouchableOpacity);
+    const y = useRef(new Animated.Value(30)).current;
+    const navigation = useNavigation();
     const animateButton = (to) => Animated.timing(y, {
         toValue: to,
         useNativeDriver: false,
         duration: 60
     });
+    let addModalRef = useRef(null);
+    let moreModalRef = useRef(null);
 
-    let modelRef = useRef(null);
-    const setModelRef = (ref) => modelRef = ref;
+    useEffect(() => {
+        navigation.setOptions({
+            headerStyle: {
+                backgroundColor: '#f4f4f4',
+                shadowColor: '#6c5ce7'
+            },
+            headerTitleStyle: {
+                fontFamily: 'Lato-Bold',
+                color: '#2d3436'
+            },
+            headerTitleAlign: 'center',
+            headerPressColorAndroid: 'transparent',
+            headerRight: () => {
+                return (
+                    <TouchableOpacity style={styles.more_button} onPress={openMoreModal}>
+                        <Image source={ThreeDotsBlack} style={{ width: 5, height: 17 }} resizeMode="contain" />
+                    </TouchableOpacity>
+                );
+            }
+        });
+    }, []);
 
-    const openAddTaskModel = () => {
-        modelRef.open();
+    const setTaskModalRef = (ref) => addModalRef = ref;
+    const setMoreModalRef = (ref) => moreModalRef = ref;
+
+    const openAddTaskModal = () => {
+        addModalRef.open();
     }
 
-    const closeAddTaskModel = () => {
-        modelRef.close();
+    const closeAddTaskModal = () => {
+        addModalRef.close();
+    }
+
+    const openMoreModal = () => {
+        moreModalRef.open();
+    }
+
+    const closeMoreModal = () => {
+        moreModalRef.close();
     }
 
     return (
         <>
-            {/* <View style={styles.navbar}>
-                <Text style={styles.screen_name}>Assignments</Text>
-                <TouchableOpacity style={styles.more_button} onPress={() => modelRef.open()}>
-                    <Image source={ThreeDots} style={{ width: 5, height: 18 }} resizeMode="contain" />
-                </TouchableOpacity>
-            </View> */}
             <View style={styles.screen}>
                 <SectionList
                     sections={DATA}
@@ -125,15 +155,16 @@ const Tasks = () => {
                             animateButton(30).start();
                         }
                     }}
-                    renderItem={({ item, index }) => {                    
-                        return <TaskListItem name={item.title} priority={item.priority}/>
+                    renderItem={({ item, index }) => {
+                        return <TaskListItem name={item.title} priority={item.priority} />
                     }}
                 />
             </View>
-            <AddButton style={{ ...styles.add_log_button, bottom: y }} onPress={openAddTaskModel}>
+            <AddButton style={{ ...styles.add_log_button, bottom: y }} onPress={openAddTaskModal}>
                 <Image source={Plus} style={{ width: 20, height: 20 }} resizeMode="contain" />
             </AddButton>
-            <AddTaskModal setRef={setModelRef} close={closeAddTaskModel}/>
+            <AddTaskModal setRef={setTaskModalRef} close={closeAddTaskModal} />
+            <MoreModal setRef={setMoreModalRef} close={closeMoreModal} />
         </>
     );
 }
@@ -145,26 +176,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#f4f4f4'
     },
-    screen_name: {
-        color: '#222222',
-        fontFamily: 'Lato-Bold',
-        fontSize: 17
-    },
-    navbar: {
-        paddingVertical: 16,
-        paddingHorizontal: 12,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: '#f4f4f4',
-        // elevation: 3
-    },
     more_button: {
-        width: 15,
-        height: 25,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 25
+        marginRight: 22,
+        height: '70%',
+        width: 30,
+        alignItems: 'flex-end',
+        justifyContent: 'center'
     },
     task: {
         paddingHorizontal: 12,

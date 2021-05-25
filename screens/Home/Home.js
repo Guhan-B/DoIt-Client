@@ -10,22 +10,57 @@ import {
 
 import Tabs from './components/Tabs';
 import AddLogModal from './components/AddLogModal';
+import MoreModal from './components/MoreModal';
 
-import ThreeDots from '../../assets/icons/ThreeDots.png';
+import ThreeDotsWhite from '../../assets/icons/ThreeDots.png';
+import { useEffect } from 'react';
+import { useNavigation } from '@react-navigation/core';
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
 const IMAGE_URL = 'https://images.unsplash.com/photo-1614204424926-196a80bf0be8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80';
 
 
 const Home = () => {
-    let modelRef = useRef(null);
-    const setModelRef = (ref) => modelRef = ref;
+    let addModalRef = useRef(null);
+    let moreModalRef = useRef(null);
+    const navigation = useNavigation();
 
-    const openAddLogModel = () => {
-        modelRef.open();
+    useEffect(() => {
+        navigation.setOptions({
+            headerStyle: {
+                backgroundColor: '#6c5ce7',
+                elevation: 0,
+            },
+            headerTitleStyle: {
+                fontFamily: 'Lato-Bold',
+                color: '#f4f4f4'
+            },
+            headerRight: () => {
+                return (
+                    <TouchableOpacity style={styles.more_button} onPress={openMoreModal}>
+                        <Image source={ThreeDotsWhite} style={{ width: 5, height: 17 }} resizeMode="contain" />
+                    </TouchableOpacity>
+                );
+            }
+        });
+    }, []);
+
+    const setAddModalRef = (ref) => addModalRef = ref;
+    const setMoreModalRef = (ref) => moreModalRef = ref;
+
+    const openAddLogModal = () => {
+        addModalRef.open();
     }
 
-    const closeAddLogModel = () => {
-        modelRef.close();
+    const closeAddLogModal = () => {
+        addModalRef.close();
+    }
+
+    const openMoreModal = () => {
+        moreModalRef.open();
+    }
+
+    const closeMoreModal = () => {
+        moreModalRef.close();
     }
 
     return (
@@ -41,10 +76,11 @@ const Home = () => {
                     </View>
                 </View>
                 <View style={styles.home_body}>
-                    <Tabs openModel={openAddLogModel} />
+                    <Tabs openModel={openAddLogModal} />
                 </View>
             </View>
-            <AddLogModal setRef={setModelRef} close={closeAddLogModel} />
+            <AddLogModal setRef={setAddModalRef} close={closeAddLogModal} />
+            <MoreModal setRef={setMoreModalRef} close={closeMoreModal}/>
         </>
     );
 }
@@ -105,12 +141,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#6c5ce7'
     },
     more_button: {
-        width: 15,
-        height: 25,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 25
+        marginRight: 22,
+        height: '70%',
+        width: 30,
+        alignItems: 'flex-end',
+        justifyContent: 'center'
     }
 });
 
 export default Home;
+

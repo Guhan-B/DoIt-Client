@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     Dimensions
 } from 'react-native'
+import { useNavigation } from '@react-navigation/native';
 
 import Plus from '../../../assets/icons/Plus.png';
 import DATA from '../../../assets/data/logs';
@@ -16,8 +17,9 @@ import DATA from '../../../assets/data/logs';
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
 
 const MyLogsTab = ({ openModel }) => {
-    const y = useRef(new Animated.Value(0)).current;
+    const y = useRef(new Animated.Value(90)).current;
     const AddButton = Animated.createAnimatedComponent(TouchableOpacity);
+    const navigation = useNavigation();
     const animateButton = (to) => Animated.timing(y, {
         toValue: to,
         useNativeDriver: false,
@@ -37,7 +39,7 @@ const MyLogsTab = ({ openModel }) => {
                     if (e.nativeEvent.velocity.y > 0) {
                         animateButton(-100).start();
                     } else {
-                        animateButton(30).start();
+                        animateButton(90).start();
                     }
                 }}
                 ItemSeparatorComponent={() => {
@@ -45,45 +47,12 @@ const MyLogsTab = ({ openModel }) => {
                         <View style={{ height: 1, width: WIDTH, backgroundColor: '#E5E5E5' }}></View>
                     );
                 }}
-                renderItem={({ item }) => (
-                    <View style={styles.log}>
-                        <Text style={{
-                            fontFamily: 'Lato-Bold',
-                            fontSize: 16,
-                            color: '#2d3436',
-                            marginBottom: 5
-                        }}>
-                            {item.name}
-                        </Text>
-                        <Text style={{
-                            fontFamily: 'Lato-Bold',
-                            fontSize: 14,
-                            color: '#6c5ce7',
-                            marginBottom: 12
-                        }}>
-                            {item.tasks.length} Tasks
-                            </Text>
-                        <Text style={{
-                            fontFamily: 'Lato-Regular',
-                            fontSize: 13,
-                            color: '#636e72',
-                            marginBottom: 16,
-                            lineHeight: 17
-                        }}>
-                            {item.description}
-                        </Text>
-                        <Text style={{
-                            fontFamily: 'Lato-Bold',
-                            fontSize: 12,
-                            color: '#636e72',
-                            textAlign: 'right',
-                            marginBottom: 6
-                        }}>34%</Text>
-                        <View style={styles.progress_bar}>
-                            <View style={styles.progress}></View>
-                        </View>
-                    </View>
-                )}
+                renderItem={({ item }) => <LogItem
+                    name={item.name}
+                    description={item.description}
+                    count={item.tasks.length}
+                    navigation={navigation}
+                />}
             />
             <AddButton style={{ ...styles.add_log_button, bottom: y }} onPress={openModel}>
                 <Image source={Plus} style={{ width: 20, height: 20 }} resizeMode="contain" />
@@ -91,6 +60,54 @@ const MyLogsTab = ({ openModel }) => {
         </View>
     )
 };
+
+const LogItem = ({ name, count, description, progress, navigation }) => {
+
+
+    const onLogPress = () => {
+        navigation.navigate("Tasks");
+    }
+
+    return (
+        <TouchableOpacity onPress={onLogPress} activeOpacity={1} style={styles.log}>
+            <Text style={{
+                fontFamily: 'Lato-Bold',
+                fontSize: 16,
+                color: '#2d3436',
+                marginBottom: 5
+            }}>
+                {name}
+            </Text>
+            <Text style={{
+                fontFamily: 'Lato-Bold',
+                fontSize: 14,
+                color: '#6c5ce7',
+                marginBottom: 12
+            }}>
+                {count} Tasks
+            </Text>
+            <Text style={{
+                fontFamily: 'Lato-Regular',
+                fontSize: 13,
+                color: '#636e72',
+                marginBottom: 16,
+                lineHeight: 17
+            }}>
+                {description}
+            </Text>
+            <Text style={{
+                fontFamily: 'Lato-Bold',
+                fontSize: 12,
+                color: '#636e72',
+                textAlign: 'right',
+                marginBottom: 6
+            }}>34%</Text>
+            <View style={styles.progress_bar}>
+                <View style={styles.progress}></View>
+            </View>
+        </TouchableOpacity>
+    );
+}
 
 const styles = StyleSheet.create({
     log: {
