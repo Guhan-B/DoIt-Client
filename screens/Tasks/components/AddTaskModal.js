@@ -40,6 +40,15 @@ const AddLogModal = ({ setRef, close }) => {
             return "High Prority";
     }
 
+    const getPriorityColor = (val) => {
+        if (val === 0)
+            return "#74b9ff";
+        if (val === 1)
+            return "#ffeaa7";
+        if (val === 2)
+            return "#ff7675";
+    }
+
 
     const createHandler = () => {
         console.log(name, priority, date);
@@ -135,7 +144,7 @@ const AddLogModal = ({ setRef, close }) => {
                                 paddingHorizontal: 12,
                                 paddingVertical: 8,
                                 fontFamily: 'Lato-Regular',
-                                color: '#222',
+                                color: getPriorityColor(priority),
                                 flex: 1
                             }}
                         />

@@ -13,6 +13,7 @@ import AddLogModal from './components/AddLogModal';
 import MoreModal from './components/MoreModal';
 
 import ThreeDotsWhite from '../../assets/icons/ThreeDots.png';
+import ThreeDots from '../../assets/icons/ThreeDots.svg';
 import { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/core';
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');

@@ -17,9 +17,19 @@ const AddLogModal = ({ setRef, close }) => {
             customStyles={{ container: { paddingHorizontal: 12, borderTopLeftRadius: 20, borderTopRightRadius: 20 } }}
             closeOnDragDown={true}
             ref={setRef}
-            height={400}
+            height={200}
         >
-
+            <View style={styles.more_container}>
+                <TouchableOpacity style={styles.option}>
+                    <Text style={styles.option_text}>Mark all as compeleted</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.option}>
+                    <Text style={styles.option_text}>Edit Log Details</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.option}>
+                    <Text style={{...styles.option_text, color: '#d63031'}}>Delete Log</Text>
+                </TouchableOpacity>
+            </View>
         </Modal>
     );
 }
@@ -46,6 +56,15 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         height: 45,
         marginLeft: 8
+    },
+    option: {
+        paddingVertical: 18,
+        // backgroundColor: 'red'
+    },
+    option_text:{
+        fontFamily: 'Lato-Regular',
+        fontSize: 15,
+        color: '#2d3436'
     }
 });
 

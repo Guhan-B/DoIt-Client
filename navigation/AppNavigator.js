@@ -5,9 +5,9 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import HomeScreen from '../screens/Home/Home';
 import TasksScreen from '../screens/Tasks/Tasks';
+import RegisterScreen from '../screens/Register/Register';
+import LoginScreen from '../screens/Login/Login';
 
-import ThreeDotsWhite from '../assets/icons/ThreeDots.png';
-import ThreeDotsBlack from '../assets/icons/ThreeDotsBlack.png';
 import BackBlack from '../assets/icons/BackArrowBlack.png';
 
 const Stack = createStackNavigator();
@@ -15,7 +15,9 @@ const Stack = createStackNavigator();
 export default AppNavigator = () => {
     return (
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Home">
+            <Stack.Navigator initialRouteName="Login">
+                <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Tasks" component={TasksScreen} options={({ route, navigation }) => {
                     console.log(route);

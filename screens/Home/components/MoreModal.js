@@ -19,7 +19,7 @@ const AddLogModal = ({ setRef, close }) => {
             ref={setRef}
             height={400}
         >
-
+            
         </Modal>
     );
 }

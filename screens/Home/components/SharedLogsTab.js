@@ -1,6 +1,7 @@
 import React from 'react';
 import {
-    View
+    View,
+    Text
 } from 'react-native';
 import LottieView from 'lottie-react-native';
 import gearAnimation from '../../../assets/lottie/gears.json';
@@ -9,8 +10,11 @@ import gearAnimation from '../../../assets/lottie/gears.json';
 const SharedLogsTab = () => {
     console.log(gearAnimation);
     return (
-        <View style={{ flex: 1, backgroundColor: 'transparent' }}>
-            <LottieView source={gearAnimation} autoPlay loop />
+        <View style={{ flex: 1, alignItems: 'center', paddingTop: 100 }}>
+            <View style={{ width: 60, height: 120 }}>
+                <LottieView resizeMode="cover" autoSize={false} source={gearAnimation} autoPlay loop />
+            </View>
+            <Text style={{fontFamily: 'Lato-Regular', color:"#636e72"}}>Work in progress</Text>
         </View>
     )
 };
