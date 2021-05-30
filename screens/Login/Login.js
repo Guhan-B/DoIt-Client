@@ -67,6 +67,7 @@ const Login = () => {
                         ref={emailRef}
                         style={styles.form_field}
                         placeholder={"Email"}
+                        selectionColor="#a29bfe"
                         placeholderTextColor={"#b2bec3"}
                         spellCheck={false}
                         keyboardAppearance="default"
@@ -78,6 +79,7 @@ const Login = () => {
                         ref={passwordRef}
                         style={styles.form_field}
                         placeholder={"Password"}
+                        selectionColor="#a29bfe"
                         placeholderTextColor={"#b2bec3"}
                         spellCheck={false}
                         keyboardAppearance="default"

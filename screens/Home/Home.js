@@ -38,7 +38,7 @@ const Home = () => {
             },
             headerRight: () => {
                 return (
-                    <TouchableOpacity style={styles.more_button} onPress={openMoreModal}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.more_button} onPress={openMoreModal}>
                         <Image source={ThreeDotsWhite} style={{ width: 5, height: 17 }} resizeMode="contain" />
                     </TouchableOpacity>
                 );

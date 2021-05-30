@@ -11,7 +11,9 @@ import {
     Dimensions,
     FlatList,
     Animated,
-    Easing
+    Easing,
+    Keyboard,
+    Platform
 } from 'react-native';
 
 import AvatarOne from '../../assets/avatars/1.svg';
@@ -74,58 +76,60 @@ const PostRegister = () => {
     }
 
     return (
-        <View style={styles.screen}>
-            <View style={styles.greetings}>
-                <Text style={styles.greetings_text_1}>Hello 👋</Text>
-                <Text style={styles.greetings_text_2}>Welcome to DoIt.</Text>
-            </View>
-            <View style={{ width: '100%', marginBottom: 24 }}>
-                <View style={{ height: 150, marginBottom: 48 }}>
-                    <Text style={styles.avatar_text}>Pick an amazing avatar</Text>
-                    <FlatList
-                        horizontal
-                        data={AVATARS}
-                        contentContainerStyle={{ paddingHorizontal: 16 }}
-                        ItemSeparatorComponent={() => <View style={{ width: 8 }} />}
-                        bounces={false}
-                        overScrollMode="never"
-                        renderItem={({ item, index }) => {
-                            const avatar_styles = {
-                                ...styles.avatar_item,
-                                borderColor: (item.id === avatar) ? '#a29bfe' : '#f4f4f4',
-                            }
-                            return (
-                                <TouchableOpacity activeOpacity={0.8} style={avatar_styles} onPress={() => selectAvatar(item.id)}>
-                                    <item.Component width={100} height={100} />
-                                </TouchableOpacity>
-                            );
-                        }}
-                    />
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+            <TouchableOpacity activeOpacity={1} style={styles.screen} onPress={() => Keyboard.dismiss()}>
+                <View style={styles.greetings}>
+                    <Text style={styles.greetings_text_1}>Hello 👋</Text>
+                    <Text style={styles.greetings_text_2}>Welcome to DoIt.</Text>
                 </View>
-                <View style={styles.input_wrapper}>
-                    <TextInput
-                        style={styles.name_input}
-                        placeholder="What's your name?"
-                        placeholderTextColor="#b2bec3"
-                        spellCheck={false}
-                        onFocus={() => lineAnimation(1).start()}
-                        onBlur={() => lineAnimation(0).start()}
-                    />
-                    <View style={styles.underline} >
-                        <Animated.View style={[styles.underline_active, { transform: [{ scaleX: scale }] }]} />
+                <View style={{ width: '100%', marginBottom: 24 }}>
+                    <View style={{ height: 150, marginBottom: 48 }}>
+                        <Text style={styles.avatar_text}>Pick an amazing avatar</Text>
+                        <FlatList
+                            horizontal
+                            data={AVATARS}
+                            contentContainerStyle={{ paddingHorizontal: 16 }}
+                            ItemSeparatorComponent={() => <View style={{ width: 8 }} />}
+                            bounces={false}
+                            overScrollMode="never"
+                            renderItem={({ item, index }) => {
+                                const avatar_styles = {
+                                    ...styles.avatar_item,
+                                    borderColor: (item.id === avatar) ? '#a29bfe' : '#f4f4f4',
+                                }
+                                return (
+                                    <TouchableOpacity activeOpacity={0.8} style={avatar_styles} onPress={() => selectAvatar(item.id)}>
+                                        <item.Component width={100} height={100} />
+                                    </TouchableOpacity>
+                                );
+                            }}
+                        />
+                    </View>
+                    <View style={styles.input_wrapper}>
+                        <TextInput
+                            style={styles.name_input}
+                            placeholder="What's your name?"
+                            placeholderTextColor="#b2bec3"
+                            spellCheck={false}
+                            onFocus={() => lineAnimation(1).start()}
+                            onBlur={() => lineAnimation(0).start()}
+                        />
+                        <View style={styles.underline} >
+                            <Animated.View style={[styles.underline_active, { transform: [{ scaleX: scale }] }]} />
+                        </View>
                     </View>
                 </View>
-            </View>
-            <View style={{ width: '100%', alignItems: 'center' }}>
-                <TouchableOpacity activeOpacity={0.8} style={styles.next_button} onPress={nextHandler}>
-                    {
-                        (isLoading) ?
-                            <MaterialIndicator color="#f4f4f4" /> :
-                            <NextArrow width={15} />
-                    }
-                </TouchableOpacity>
-            </View>
-        </View>
+                <View style={{ width: '100%', alignItems: 'center' }}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.next_button} onPress={nextHandler}>
+                        {
+                            (isLoading) ?
+                                <MaterialIndicator color="#f4f4f4" /> :
+                                <NextArrow width={15} />
+                        }
+                    </TouchableOpacity>
+                </View>
+            </TouchableOpacity>
+        </KeyboardAvoidingView>
     );
 }
 

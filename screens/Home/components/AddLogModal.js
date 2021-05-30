@@ -26,6 +26,7 @@ const AddLogModal = ({ setRef,close }) => {
             <View style={{ marginBottom: 16, marginTop: 16 }}>
                 <Text style={{ marginBottom: 8, fontFamily: 'Lato-Bold', color: '#555555' }}>Title</Text>
                 <TextInput
+                    selectionColor="#a29bfe"
                     style={{
                         borderColor: '#e0e0e0',
                         borderWidth: 1,
@@ -63,10 +64,10 @@ const AddLogModal = ({ setRef,close }) => {
                     20/120
                 </Text>
                 <View style={styles.controls}>
-                    <TouchableOpacity style={styles.primary_button}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.primary_button}>
                         <Text style={{ fontFamily: 'Lato-Bold', color: '#f4f4f4', fontSize: 14 }}>Create Log</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.secondary_button} onPress={callClose}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.secondary_button} onPress={callClose}>
                         <Text style={{ fontFamily: 'Lato-Bold', color: '#555', fontSize: 14 }}>Discard</Text>
                     </TouchableOpacity>
                 </View>

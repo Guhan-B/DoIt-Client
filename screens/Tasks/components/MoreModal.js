@@ -20,13 +20,13 @@ const AddLogModal = ({ setRef, close }) => {
             height={200}
         >
             <View style={styles.more_container}>
-                <TouchableOpacity style={styles.option}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.option}>
                     <Text style={styles.option_text}>Mark all as compeleted</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.option}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.option}>
                     <Text style={styles.option_text}>Edit Log Details</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.option}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.option}>
                     <Text style={{...styles.option_text, color: '#d63031'}}>Delete Log</Text>
                 </TouchableOpacity>
             </View>

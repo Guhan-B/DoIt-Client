@@ -33,7 +33,7 @@ const MyLogsTab = ({ openModel }) => {
                 data={DATA}
                 overScrollMode="never"
                 contentContainerStyle={{
-                    paddingBottom: 24
+                    paddingBottom: 74
                 }}
                 onScroll={(e) => {
                     if (e.nativeEvent.velocity.y > 0) {
@@ -54,7 +54,7 @@ const MyLogsTab = ({ openModel }) => {
                     navigation={navigation}
                 />}
             />
-            <AddButton style={{ ...styles.add_log_button, bottom: y }} onPress={openModel}>
+            <AddButton activeOpacity={0.8} style={{ ...styles.add_log_button, bottom: y }} onPress={openModel}>
                 <Image source={Plus} style={{ width: 20, height: 20 }} resizeMode="contain" />
             </AddButton>
         </View>

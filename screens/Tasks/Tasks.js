@@ -108,7 +108,7 @@ const Tasks = () => {
             headerPressColorAndroid: 'transparent',
             headerRight: () => {
                 return (
-                    <TouchableOpacity style={styles.more_button} onPress={openMoreModal}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.more_button} onPress={openMoreModal}>
                         <Image source={ThreeDotsBlack} style={{ width: 5, height: 17 }} resizeMode="contain" />
                     </TouchableOpacity>
                 );
@@ -160,7 +160,7 @@ const Tasks = () => {
                     }}
                 />
             </View>
-            <AddButton style={{ ...styles.add_log_button, bottom: y }} onPress={openAddTaskModal}>
+            <AddButton activeOpacity={0.8} style={{ ...styles.add_log_button, bottom: y }} onPress={openAddTaskModal}>
                 <Image source={Plus} style={{ width: 20, height: 20 }} resizeMode="contain" />
             </AddButton>
             <AddTaskModal setRef={setTaskModalRef} close={closeAddTaskModal} />

@@ -28,10 +28,10 @@ const HomeMoreModal = ({ setRef, close }) => {
             height={140}
         >
             <View style={styles.more_container}>
-                <TouchableOpacity style={styles.option}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.option}>
                     <Text style={styles.option_text}>Settings</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.option} onPress={logoutHandler}>
+                <TouchableOpacity activeOpacity={0.8} style={styles.option} onPress={logoutHandler}>
                     <Text style={{...styles.option_text, color: '#d63031'}}>Logout...</Text>
                 </TouchableOpacity>
             </View>

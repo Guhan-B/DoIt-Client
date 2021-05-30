@@ -122,7 +122,7 @@ const AddLogModal = ({ setRef, close }) => {
                             }}
                             value={date.toDateString()}
                         />
-                        <TouchableOpacity style={styles.pick_date_button} onPress={() => setShowDatePicker(true)}>
+                        <TouchableOpacity activeOpacity={0.8} style={styles.pick_date_button} onPress={() => setShowDatePicker(true)}>
                             <Image source={Calander} style={{ width: 20, height: 20 }} resizeMode="center" />
                         </TouchableOpacity>
                     </View>
@@ -130,12 +130,13 @@ const AddLogModal = ({ setRef, close }) => {
                 <View style={{ marginBottom: 16 }}>
                     <Text style={{ marginBottom: 8, fontFamily: 'Lato-Bold', color: '#555555' }}>Priority</Text>
                     <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity style={styles.less_button} onPress={() => priorityHandler(-1)}>
+                        <TouchableOpacity activeOpacity={0.8} style={styles.less_button} onPress={() => priorityHandler(-1)}>
                             <Image source={Minus} style={{ width: 15, height: 15 }} resizeMode="center" />
                         </TouchableOpacity>
                         <TextInput
                             editable={false}
                             value={getPriority(priority)}
+                            selectionColor="#a29bfe"
                             style={{
                                 textAlign: 'center',
                                 borderColor: '#e0e0e0',
@@ -148,17 +149,17 @@ const AddLogModal = ({ setRef, close }) => {
                                 flex: 1
                             }}
                         />
-                        <TouchableOpacity style={styles.more_button} onPress={() => priorityHandler(1)}>
+                        <TouchableOpacity activeOpacity={0.8} style={styles.more_button} onPress={() => priorityHandler(1)}>
                             <Image source={Plus} style={{ width: 15, height: 15 }} resizeMode="center" />
                         </TouchableOpacity>
                     </View>
                 </View>
 
                 <View style={styles.controls}>
-                    <TouchableOpacity style={styles.primary_button} onPress={createHandler}>
+                    <TouchableOpacity style={styles.primary_button} onPress={createHandler} activeOpacity={0.8}>
                         <Text style={{ fontFamily: 'Lato-Bold', color: '#f4f4f4', fontSize: 14 }}>Create Task</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.secondary_button} onPress={discardHandler}>
+                    <TouchableOpacity activeOpacity={0.8} style={styles.secondary_button} onPress={discardHandler}>
                         <Text style={{ fontFamily: 'Lato-Bold', color: '#555', fontSize: 14 }}>Discard</Text>
                     </TouchableOpacity>
                 </View>
