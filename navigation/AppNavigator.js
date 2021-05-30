@@ -7,6 +7,7 @@ import HomeScreen from '../screens/Home/Home';
 import TasksScreen from '../screens/Tasks/Tasks';
 import RegisterScreen from '../screens/Register/Register';
 import LoginScreen from '../screens/Login/Login';
+import PostRegisterScreen from '../screens/PostRegister/PostRegister';
 
 import BackBlack from '../assets/icons/BackArrowBlack.png';
 
@@ -17,6 +18,7 @@ export default AppNavigator = () => {
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Login">
                 <Stack.Screen name="Register" component={RegisterScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="PostRegister" component={PostRegisterScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Tasks" component={TasksScreen} options={({ route, navigation }) => {

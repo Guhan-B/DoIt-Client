@@ -5,11 +5,19 @@ import {
     TouchableOpacity,
     StyleSheet
 } from 'react-native';
+import { useNavigation, StackActions } from '@react-navigation/native';
 import Modal from 'react-native-raw-bottom-sheet';
 
-const AddLogModal = ({ setRef, close }) => {
+const HomeMoreModal = ({ setRef, close }) => {
+    const navigation = useNavigation();
+
     const callClose = () => {
         close();
+    }
+
+    const logoutHandler = () => {
+        close();
+        navigation.dispatch(StackActions.replace('Login'));
     }
 
     return (
@@ -17,9 +25,16 @@ const AddLogModal = ({ setRef, close }) => {
             customStyles={{ container: { paddingHorizontal: 12, borderTopLeftRadius: 20, borderTopRightRadius: 20 } }}
             closeOnDragDown={true}
             ref={setRef}
-            height={400}
+            height={140}
         >
-            
+            <View style={styles.more_container}>
+                <TouchableOpacity style={styles.option}>
+                    <Text style={styles.option_text}>Settings</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.option} onPress={logoutHandler}>
+                    <Text style={{...styles.option_text, color: '#d63031'}}>Logout...</Text>
+                </TouchableOpacity>
+            </View>
         </Modal>
     );
 }
@@ -46,7 +61,16 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         height: 45,
         marginLeft: 8
+    },
+    option: {
+        paddingVertical: 18,
+        // backgroundColor: 'red'
+    },
+    option_text:{
+        fontFamily: 'Lato-Regular',
+        fontSize: 15,
+        color: '#2d3436'
     }
 });
 
-export default AddLogModal;
+export default HomeMoreModal;

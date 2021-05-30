@@ -7,6 +7,7 @@ import {
     Dimensions,
     TouchableOpacity,
 } from 'react-native';
+import { BallIndicator, DotIndicator } from 'react-native-indicators';
 
 import Tabs from './components/Tabs';
 import AddLogModal from './components/AddLogModal';
@@ -81,7 +82,7 @@ const Home = () => {
                 </View>
             </View>
             <AddLogModal setRef={setAddModalRef} close={closeAddLogModal} />
-            <MoreModal setRef={setMoreModalRef} close={closeMoreModal}/>
+            <MoreModal setRef={setMoreModalRef} close={closeMoreModal} />
         </>
     );
 }

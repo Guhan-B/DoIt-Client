@@ -14,7 +14,7 @@ const SharedLogsTab = () => {
             <View style={{ width: 60, height: 120 }}>
                 <LottieView resizeMode="cover" autoSize={false} source={gearAnimation} autoPlay loop />
             </View>
-            <Text style={{fontFamily: 'Lato-Regular', color:"#636e72"}}>Work in progress</Text>
+            <Text style={{fontFamily: 'Lato-Regular', color:"#636e72"}}>Coming Soon...</Text>
         </View>
     )
 };

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import {
     View,
     Dimensions,
@@ -7,16 +7,19 @@ import {
     TouchableOpacity,
     TextInput,
     Keyboard,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    ToastAndroid
 } from 'react-native';
 import { useNavigation, StackActions } from '@react-navigation/native';
 import { Svg, Polygon } from 'react-native-svg';
+import { DotIndicator } from 'react-native-indicators';
 
 import Logo from '../../assets/icons/DOIT.svg';
 
+
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
 
-const Register = () => {
+const Login = () => {
     const navigation = useNavigation();
 
     const totalHeight = 250
@@ -27,8 +30,19 @@ const Register = () => {
     const passwordRef = useRef(null);
     const confirmPasswordRef = useRef(null);
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const switchMode = () => {
-        navigation.dispatch(StackActions.replace('Register'))
+        navigation.dispatch(StackActions.replace('Register'));
+    }
+
+    const loginHandler = () => {
+        setIsLoading(true);
+        ToastAndroid.showWithGravityAndOffset("Authenticating",ToastAndroid.SHORT,ToastAndroid.BOTTOM,0,HEIGHT*0.5);
+        setTimeout(()=>{
+            setIsLoading(false);
+            navigation.dispatch(StackActions.replace('Home'));
+        },2000);
     }
 
     return (
@@ -79,8 +93,12 @@ const Register = () => {
                     <Text style={styles.else_text} onPress={switchMode}>
                         New to DoIt? Register here
                     </Text>
-                    <TouchableOpacity style={styles.button} activeOpacity={0.9}>
-                        <Text style={{ fontFamily: 'Lato-Bold', color: '#f4f4f4', fontSize: 18 }}>Register</Text>
+                    <TouchableOpacity disabled={isLoading} style={styles.button} activeOpacity={0.9} onPress={loginHandler}>
+                        {
+                            (isLoading) ?
+                                <DotIndicator color="white" size={6} /> :
+                                <Text style={{ fontFamily: 'Lato-Bold', color: '#f4f4f4', fontSize: 18, marginBottom: 8 }}>Login</Text>
+                        }
                     </TouchableOpacity>
                 </View>
             </TouchableOpacity>
@@ -100,9 +118,7 @@ const styles = StyleSheet.create({
         width: WIDTH,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 18,
-        paddingBottom: 24
-
+        height: 60
     },
     else_text: {
         fontFamily: 'Lato-Bold',
@@ -137,4 +153,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Register;
+export default Login;
