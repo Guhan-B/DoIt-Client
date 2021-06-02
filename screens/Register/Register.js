@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
     View,
     Dimensions,
@@ -7,40 +8,76 @@ import {
     TouchableOpacity,
     TextInput,
     Keyboard,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    ToastAndroid
 } from 'react-native';
 import { Svg, Polygon } from 'react-native-svg';
 import { DotIndicator } from 'react-native-indicators';
 import { useNavigation, StackActions } from '@react-navigation/native';
+import validator from 'validator';
 
 import Logo from '../../assets/icons/DOIT.svg';
+import { register } from '../../store/user/action';
+import { useEffect } from 'react';
 
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
+const totalHeight = 250
+const lightCutHeight = 250;
+const darkCutHeight = 200;
 
 const Register = () => {
-    const totalHeight = 250
-    const lightCutHeight = 250;
-    const darkCutHeight = 200;
-
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
     const confirmPasswordRef = useRef(null);
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     const navigation = useNavigation();
 
+    const loading = useSelector(state => state.user.loading);
+    const error = useSelector(state => state.user.error);
+    const user = useSelector(state => state.user.user);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (error) {
+            ToastAndroid.show(error, ToastAndroid.SHORT);
+        }
+    }, [error]);
+
+    useEffect(() => {
+        if(user) {
+            console.log(user);
+            navigation.dispatch(StackActions.replace('EmailVerification'));
+        }
+    },[user]);
+
     const switchMode = () => {
-        navigation.dispatch(StackActions.replace('Login'))
+        navigation.dispatch(StackActions.replace('Login'));
     }
 
     const registerHandler = () => {
-        setIsLoading(true);
-        // ToastAndroid.showWithGravityAndOffset("Authenticating", ToastAndroid.SHORT, ToastAndroid.BOTTOM, 0, HEIGHT * 0.5);
-        setTimeout(() => {
-            setIsLoading(false);
-            navigation.dispatch(StackActions.replace('PostRegister'));
-        }, 2000);
+        if (password === "" || confirmPassword === "" || email === "") {
+            return ToastAndroid.show("Credentials cannot be empty", ToastAndroid.SHORT);
+        }
+
+        if (password.length < 6) {
+            return ToastAndroid.show("Password atleast 6 characters", ToastAndroid.SHORT)
+        }
+
+        if (!validator.isEmail(email)) {
+            return ToastAndroid.show("Email is invalid", ToastAndroid.SHORT);
+        }
+
+        if (password !== confirmPassword) {
+            return ToastAndroid.show("Password dosen't match", ToastAndroid.SHORT);
+        }
+
+
+        dispatch(register({ email, password }));
     }
 
     return (
@@ -63,6 +100,7 @@ const Register = () => {
                 <View style={styles.form}>
                     <TextInput
                         ref={emailRef}
+                        value={email}
                         style={styles.form_field}
                         placeholder={"Email"}
                         selectionColor="#a29bfe"
@@ -72,9 +110,11 @@ const Register = () => {
                         keyboardType="email-address"
                         blurOnSubmit={true}
                         onSubmitEditing={() => passwordRef.current.focus()}
+                        onChangeText={(text) => setEmail(text)}
                     />
                     <TextInput
                         ref={passwordRef}
+                        value={password}
                         style={styles.form_field}
                         placeholder={"Password"}
                         selectionColor="#a29bfe"
@@ -84,9 +124,11 @@ const Register = () => {
                         secureTextEntry={true}
                         blurOnSubmit={true}
                         onSubmitEditing={() => confirmPasswordRef.current.focus()}
+                        onChangeText={(text) => setPassword(text)}
                     />
                     <TextInput
                         ref={confirmPasswordRef}
+                        value={confirmPassword}
                         style={styles.form_field}
                         placeholder={"Confirm Password"}
                         selectionColor="#a29bfe"
@@ -95,6 +137,7 @@ const Register = () => {
                         keyboardAppearance="default"
                         secureTextEntry={true}
                         blurOnSubmit={true}
+                        onChangeText={(text) => setConfirmPassword(text)}
                     />
                     <Text style={styles.forgot_text}>
                         Forgot Password?
@@ -104,9 +147,9 @@ const Register = () => {
                     <Text style={styles.else_text} onPress={switchMode}>
                         Already have an account? Login here
                     </Text>
-                    <TouchableOpacity disabled={isLoading} style={styles.button} activeOpacity={0.9} onPress={registerHandler}>
+                    <TouchableOpacity disabled={loading} style={styles.button} activeOpacity={0.9} onPress={registerHandler}>
                         {
-                            (isLoading) ?
+                            (loading) ?
                                 <DotIndicator color="white" size={6} /> :
                                 <Text style={{ fontFamily: 'Lato-Bold', color: '#f4f4f4', fontSize: 18, marginBottom: 8 }}>
                                     Register

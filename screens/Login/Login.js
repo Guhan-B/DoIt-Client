@@ -28,7 +28,6 @@ const Login = () => {
 
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
-    const confirmPasswordRef = useRef(null);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -85,7 +84,6 @@ const Login = () => {
                         keyboardAppearance="default"
                         secureTextEntry={true}
                         blurOnSubmit={true}
-                        onSubmitEditing={() => confirmPasswordRef.current.focus()}
                     />
                     <Text style={styles.forgot_text}>
                         Forgot Password?
