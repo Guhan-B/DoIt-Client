@@ -1,31 +1,59 @@
+import { StackActions, useNavigation } from '@react-navigation/core';
 import React, { useState, useRef, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Dimensions, ToastAndroid, Keyboard } from 'react-native';
 import { DotIndicator } from 'react-native-indicators';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { generateOTP, verifyOTP } from '../../store/verification/action';
 
 const { width: WIDTH } = Dimensions.get('window');
 
 const EmailVerification = () => {
-    const [isLoading, setIsLoading] = useState(false);
-
-    const [showResend, setShowResend] = useState(false);
-
     const [otp, setOtp] = useState(["", "", "", ""]);
-
-    useEffect(() => {
-        // onmount
-        generateOTP();
-    }, [])
 
     const ref1 = useRef(null);
     const ref2 = useRef(null);
     const ref3 = useRef(null);
     const ref4 = useRef(null);
 
-    const generateOTP = () => {
-        setShowResend(false);
-        setTimeout(() => {
-            setShowResend(true);
-        }, 4000);
+    const user = useSelector(state => state.user);
+    const error = useSelector(state => state.verify.error);
+    const loading = useSelector(state => state.verify.loading);
+    const tip = useSelector(state => state.verify.tip);
+    const id = useSelector(state => state.verify.verificationId);
+
+    const dispatch = useDispatch();
+    const navigation = useNavigation();
+
+    useEffect(() => {
+        dispatch(generateOTP(user._id));
+    }, [])
+
+    useEffect(() => {
+        if (error) {
+            ToastAndroid.show(error, ToastAndroid.SHORT);
+        }
+    }, [error]);
+
+    const profileUpdate = () => {
+        navigation.dispatch(StackActions.replace("ProfileUpdate"));
+    }
+
+    const verifyHandler = () => {
+
+        for (let digit of otp) {
+            if (!digit) {
+                return;
+            }
+        }
+
+        const result = Number.parseInt(otp.reduce((acc, next) => Number.parseInt(acc) * 10 + Number.parseInt(next)));
+
+        dispatch(verifyOTP(id, result, profileUpdate))
+    }
+
+    const resendHandler = () => {
+        dispatch(generateOTP(user._id));
     }
 
     const onChangeText = (ref, value, index) => {
@@ -34,22 +62,9 @@ const EmailVerification = () => {
                 ref.current.focus();
             }
         }
-        console.log(value);
         const newOtp = [...otp];
         newOtp[index] = value;
         setOtp(newOtp);
-    }
-
-    const verifyHandler = () => {
-        setIsLoading(true);
-        for (let digit of otp) {
-            if (!digit) {
-                return;
-            }
-        }
-
-        const result = otp.reduce((acc, next) => Number.parseInt(acc) * 10 + Number.parseInt(next));
-        console.log(result);
     }
 
     return (
@@ -97,12 +112,12 @@ const EmailVerification = () => {
                         style={styles.input_field}
                     />
                 </View>
-                <Text style={styles.timer_text}>OTP will be vaild till 12.45PM</Text>
-                <Text onPress={generateOTP} style={styles.resend_text} >Did not recieve the OTP? Send again</Text>
+                <Text style={styles.timer_text}>{tip}</Text>
+                <Text style={styles.resend_text} onPress={resendHandler}>Did not recieve the OTP? Send again</Text>
             </View>
-            <TouchableOpacity disabled={isLoading} style={styles.button} activeOpacity={0.9} onPress={verifyHandler}>
+            <TouchableOpacity disabled={loading} style={styles.button} activeOpacity={0.9} onPress={verifyHandler}>
                 {
-                    (isLoading) ?
+                    (loading) ?
                         <DotIndicator color="white" size={6} /> :
                         <Text style={{ fontFamily: 'Lato-Bold', color: '#f4f4f4', fontSize: 18, marginBottom: 0 }}>Verify OTP</Text>
                 }

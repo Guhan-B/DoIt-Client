@@ -1,44 +1,47 @@
 import {
-    REGISTER_ERROR,
-    REGISTER_REQUEST,
-    REGISTER_SUCCESS
+    UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS, UPDATE_PROFILE_ERROR,
+    UPDATE_USER
 } from './type';
 
 const initialState = {
-    loading: false,
+    _id: null,
+    email: null,
+    name: null,
+    avatar: 0,
     error: null,
-    user: null,
-    authenticated: false,
+    loading: false
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case REGISTER_REQUEST:
+        case UPDATE_USER:
+            return {
+                ...state,
+                ...action.user
+            }
+        case UPDATE_PROFILE_REQUEST:
             return {
                 ...state,
                 loading: true,
                 error: null,
-                user: null,
-                authenticated: false,
             }
-        case REGISTER_ERROR:
-            return {
-                ...state,
-                loading: false,
-                error: action.error,
-                user: null,
-                authenticated: false
-            }
-        case REGISTER_SUCCESS:
+        case UPDATE_PROFILE_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 error: null,
-                user: action.user,
-                authenticated: false
+                name: action.name,
+                avatar: action.avatar
             }
+        case UPDATE_PROFILE_ERROR:
+            return {
+                ...state,
+                loading: false,
+                error: action.error,
+            }
+
         default:
-            return state;
+            return state
     }
 }
 

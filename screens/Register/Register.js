@@ -1,24 +1,13 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-    View,
-    Dimensions,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    TextInput,
-    Keyboard,
-    KeyboardAvoidingView,
-    ToastAndroid
-} from 'react-native';
+import { View, Dimensions, StyleSheet, Text, TouchableOpacity, TextInput, Keyboard, KeyboardAvoidingView, ToastAndroid } from 'react-native';
 import { Svg, Polygon } from 'react-native-svg';
 import { DotIndicator } from 'react-native-indicators';
 import { useNavigation, StackActions } from '@react-navigation/native';
 import validator from 'validator';
 
 import Logo from '../../assets/icons/DOIT.svg';
-import { register } from '../../store/user/action';
-import { useEffect } from 'react';
+import { register } from '../../store/authentication/action';
 
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
 const totalHeight = 250
@@ -30,30 +19,23 @@ const Register = () => {
     const passwordRef = useRef(null);
     const confirmPasswordRef = useRef(null);
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
+    const [email, setEmail] = useState("bkguhan2001@gmail.com");
+    const [password, setPassword] = useState("111111");
+    const [confirmPassword, setConfirmPassword] = useState("111111");
 
     const navigation = useNavigation();
-
-    const loading = useSelector(state => state.user.loading);
-    const error = useSelector(state => state.user.error);
-    const user = useSelector(state => state.user.user);
-
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        if (error) {
-            ToastAndroid.show(error, ToastAndroid.SHORT);
-        }
-    }, [error]);
+    const loading = useSelector(state => state.auth.loading);
+    const error = useSelector(state => state.auth.error);
 
-    useEffect(() => {
-        if(user) {
-            console.log(user);
-            navigation.dispatch(StackActions.replace('EmailVerification'));
-        }
-    },[user]);
+    const errorHandler = (error) => {
+        ToastAndroid.show(error, ToastAndroid.SHORT);
+    }
+
+    const doVerification = () => {
+        navigation.dispatch(StackActions.replace('EmailVerification'));
+    }
 
     const switchMode = () => {
         navigation.dispatch(StackActions.replace('Login'));
@@ -76,8 +58,7 @@ const Register = () => {
             return ToastAndroid.show("Password dosen't match", ToastAndroid.SHORT);
         }
 
-
-        dispatch(register({ email, password }));
+        dispatch(register({ email, password }, doVerification, errorHandler));
     }
 
     return (

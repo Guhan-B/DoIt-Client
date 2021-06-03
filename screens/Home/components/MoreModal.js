@@ -1,23 +1,21 @@
-import React, { useState } from 'react';
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    StyleSheet
-} from 'react-native';
-import { useNavigation, StackActions } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ToastAndroid } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 import Modal from 'react-native-raw-bottom-sheet';
+
+import { logout } from '../../../store/authentication/action';
 
 const HomeMoreModal = ({ setRef, close }) => {
     const navigation = useNavigation();
 
-    const callClose = () => {
-        close();
-    }
+    const tokens = useSelector(state => state.auth.tokens)
+
+    const dispatch = useDispatch();
 
     const logoutHandler = () => {
         close();
-        navigation.dispatch(StackActions.replace('Login'));
+        dispatch(logout(tokens.access, tokens.refresh));
     }
 
     return (
@@ -32,7 +30,7 @@ const HomeMoreModal = ({ setRef, close }) => {
                     <Text style={styles.option_text}>Settings</Text>
                 </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.8} style={styles.option} onPress={logoutHandler}>
-                    <Text style={{...styles.option_text, color: '#d63031'}}>Logout...</Text>
+                    <Text style={{ ...styles.option_text, color: '#d63031' }}>Logout...</Text>
                 </TouchableOpacity>
             </View>
         </Modal>
@@ -66,7 +64,7 @@ const styles = StyleSheet.create({
         paddingVertical: 18,
         // backgroundColor: 'red'
     },
-    option_text:{
+    option_text: {
         fontFamily: 'Lato-Regular',
         fontSize: 15,
         color: '#2d3436'

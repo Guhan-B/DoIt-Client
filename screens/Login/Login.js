@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
     View,
     Dimensions,
@@ -13,35 +13,56 @@ import {
 import { useNavigation, StackActions } from '@react-navigation/native';
 import { Svg, Polygon } from 'react-native-svg';
 import { DotIndicator } from 'react-native-indicators';
+import { useDispatch, useSelector } from 'react-redux';
+import Validator from 'validator';
 
 import Logo from '../../assets/icons/DOIT.svg';
+import { login } from '../../store/authentication/action';
 
-
+const totalHeight = 250
+const lightCutHeight = 250;
+const darkCutHeight = 200;
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
 
 const Login = () => {
-    const navigation = useNavigation();
-
-    const totalHeight = 250
-    const lightCutHeight = 250;
-    const darkCutHeight = 200;
+    const [email, setEmail] = useState("bkguhan2001@gmail.com");
+    const [password, setPassword] = useState("111111");
 
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
 
-    const [isLoading, setIsLoading] = useState(false);
+    const navigation = useNavigation();
+    const dispatch = useDispatch();
+
+    const loading = useSelector(state => state.auth.loading);
+    const error = useSelector(state => state.auth.error);
+
+    const errorHandler = (error) => {
+        ToastAndroid.show(error, ToastAndroid.SHORT);
+    }
 
     const switchMode = () => {
         navigation.dispatch(StackActions.replace('Register'));
     }
 
+    const doVerification = () => {
+        navigation.dispatch(StackActions.replace('EmailVerification'));
+    }
+
     const loginHandler = () => {
-        setIsLoading(true);
-        ToastAndroid.showWithGravityAndOffset("Authenticating",ToastAndroid.SHORT,ToastAndroid.BOTTOM,0,HEIGHT*0.5);
-        setTimeout(()=>{
-            setIsLoading(false);
-            navigation.dispatch(StackActions.replace('Home'));
-        },2000);
+        if (password === "" || email === "") {
+            return ToastAndroid.show("Credentials cannot be empty", ToastAndroid.SHORT);
+        }
+
+        if (password.length < 6) {
+            return ToastAndroid.show("Password atleast 6 characters", ToastAndroid.SHORT)
+        }
+
+        if (!Validator.isEmail(email)) {
+            return ToastAndroid.show("Email is invalid", ToastAndroid.SHORT);
+        }
+
+        dispatch(login({ email, password }, doVerification, errorHandler));
     }
 
     return (
@@ -64,6 +85,7 @@ const Login = () => {
                 <View style={styles.form}>
                     <TextInput
                         ref={emailRef}
+                        value={email}
                         style={styles.form_field}
                         placeholder={"Email"}
                         selectionColor="#a29bfe"
@@ -73,9 +95,11 @@ const Login = () => {
                         keyboardType="email-address"
                         blurOnSubmit={true}
                         onSubmitEditing={() => passwordRef.current.focus()}
+                        onChangeText={text => setEmail(text)}
                     />
                     <TextInput
                         ref={passwordRef}
+                        value={password}
                         style={styles.form_field}
                         placeholder={"Password"}
                         selectionColor="#a29bfe"
@@ -84,6 +108,7 @@ const Login = () => {
                         keyboardAppearance="default"
                         secureTextEntry={true}
                         blurOnSubmit={true}
+                        onChangeText={text => setPassword(text)}
                     />
                     <Text style={styles.forgot_text}>
                         Forgot Password?
@@ -93,9 +118,9 @@ const Login = () => {
                     <Text style={styles.else_text} onPress={switchMode}>
                         New to DoIt? Register here
                     </Text>
-                    <TouchableOpacity disabled={isLoading} style={styles.button} activeOpacity={0.9} onPress={loginHandler}>
+                    <TouchableOpacity disabled={loading} style={styles.button} activeOpacity={0.9} onPress={loginHandler}>
                         {
-                            (isLoading) ?
+                            (loading) ?
                                 <DotIndicator color="white" size={6} /> :
                                 <Text style={{ fontFamily: 'Lato-Bold', color: '#f4f4f4', fontSize: 18, marginBottom: 8 }}>Login</Text>
                         }

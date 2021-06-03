@@ -1,22 +1,12 @@
-import React, { useRef, useState } from 'react';
-import {
-    View,
-    Text,
-    Image,
-    StyleSheet,
-    Dimensions,
-    TouchableOpacity,
-} from 'react-native';
-import { BallIndicator, DotIndicator } from 'react-native-indicators';
+import React, { useRef, useState, useEffect } from 'react';
+import {View,Text,Image,StyleSheet,Dimensions,TouchableOpacity,} from 'react-native';
+import { useNavigation } from '@react-navigation/core';
 
 import Tabs from './components/Tabs';
 import AddLogModal from './components/AddLogModal';
 import MoreModal from './components/MoreModal';
-
 import ThreeDotsWhite from '../../assets/icons/ThreeDots.png';
-import ThreeDots from '../../assets/icons/ThreeDots.svg';
-import { useEffect } from 'react';
-import { useNavigation } from '@react-navigation/core';
+
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
 const IMAGE_URL = 'https://images.unsplash.com/photo-1614204424926-196a80bf0be8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80';
 

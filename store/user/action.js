@@ -1,40 +1,38 @@
-import axios from 'axios';
+import { UPDATE_PROFILE_REQUEST, UPDATE_USER } from './type';
 
-import { REGISTER_REQUEST, REGISTER_SUCCESS, REGISTER_ERROR } from './type';
-
-const registerRequest = () => {
+export const updateUser = (user) => {
     return {
-        type: REGISTER_REQUEST
-    }
-}
-
-const registerSuccess = (user) => {
-    return {
-        type: REGISTER_SUCCESS,
+        type: UPDATE_USER,
         user: user
     }
 }
 
-const registerError = (error) => {
+const updateProfileRequest = () => {
     return {
-        type: REGISTER_ERROR,
+        type: UPDATE_PROFILE_REQUEST
+    }
+}
+
+const updateProfileSuccess = (name,avatar) => {
+    return {
+        type: UPDATE_PROFILE_SUCCESS,
+        name: name,
+        avatar: avatar
+    }
+}
+
+const updateProfileError = (error) => {
+    return {
+        type: UPDATE_PROFILE_ERROR,
         error: error
     }
 }
 
-export const register = (credentials) => {
-    console.log(credentials);
+export const updateProfile = (name, avatar, callback, error) => {
     return (dispatch) => {
-        dispatch(registerRequest());
-        axios.post('http://localhost:8000/auth/register', {
-            ...credentials
-        }).then(res => {
-            console.log("success");
-            dispatch(registerSuccess(res.data.user));
-        }).catch(err => {
-            console.log(err);
-            const error = err.response.data.error;
-            dispatch(registerError(error.message));
-        })
+        dispatch(updateProfileRequest);
+        // TODO: Axios request here after adding backend endpoint.
+        dispatch(updateProfileSuccess(name,avatar));
+        callback();
     }
 }
