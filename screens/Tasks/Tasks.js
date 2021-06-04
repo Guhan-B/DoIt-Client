@@ -17,6 +17,7 @@ import TaskListItem from './components/TaskListItem';
 import Plus from '../../assets/icons/Plus.png';
 import ThreeDotsBlack from '../../assets/icons/ThreeDotsBlack.png';
 import BackBlack from '../../assets/icons/BackArrowBlack.png';
+import { useSelector } from 'react-redux';
 
 
 const DATA = [
@@ -82,10 +83,10 @@ const DATA = [
     }
 ];
 
-const Tasks = () => {
+const Tasks = ({ route, navigation }) => {
     const AddButton = Animated.createAnimatedComponent(TouchableOpacity);
     const y = useRef(new Animated.Value(30)).current;
-    const navigation = useNavigation();
+
     const animateButton = (to) => Animated.timing(y, {
         toValue: to,
         useNativeDriver: false,
@@ -94,18 +95,21 @@ const Tasks = () => {
     let addModalRef = useRef(null);
     let moreModalRef = useRef(null);
 
+    const tasks = useSelector(state => state.log.logs[route.params.index].tasks);
+
+    const pendingTasks = tasks.filter(task => !task.completed);
+    const completedTasks = tasks.filter(task => task.completed);
+
+    const renderData = [
+        { title: "Pending", data: pendingTasks },
+        { title: "Completed", data: completedTasks }
+    ];
+
+    // console.log(tasks);
+
     useEffect(() => {
         navigation.setOptions({
-            headerStyle: {
-                backgroundColor: '#f4f4f4',
-                shadowColor: '#6c5ce7'
-            },
-            headerTitleStyle: {
-                fontFamily: 'Lato-Bold',
-                color: '#2d3436'
-            },
-            headerTitleAlign: 'center',
-            headerPressColorAndroid: 'transparent',
+            title: route.params.title,
             headerRight: () => {
                 return (
                     <TouchableOpacity activeOpacity={0.8} style={styles.more_button} onPress={openMoreModal}>
@@ -139,7 +143,7 @@ const Tasks = () => {
         <>
             <View style={styles.screen}>
                 <SectionList
-                    sections={DATA}
+                    sections={renderData}
                     ItemSeparatorComponent={() => {
                         return (
                             <View style={{ height: 1, width: '100%', backgroundColor: '#dfe6e9' }}></View>
@@ -156,7 +160,7 @@ const Tasks = () => {
                         }
                     }}
                     renderItem={({ item, index }) => {
-                        return <TaskListItem name={item.title} priority={item.priority} />
+                        return <TaskListItem name={item.title} priority={item.priority} completed={item.completed}/>
                     }}
                 />
             </View>

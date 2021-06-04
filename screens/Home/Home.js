@@ -1,20 +1,31 @@
-import React, { useRef, useState, useEffect } from 'react';
-import {View,Text,Image,StyleSheet,Dimensions,TouchableOpacity,} from 'react-native';
+import React, { useRef, useState, useEffect, memo } from 'react';
+import { View, Text, Image, StyleSheet, Dimensions, TouchableOpacity, } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 
 import Tabs from './components/Tabs';
 import AddLogModal from './components/AddLogModal';
 import MoreModal from './components/MoreModal';
 import ThreeDotsWhite from '../../assets/icons/ThreeDots.png';
+import { useSelector } from 'react-redux';
 
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
-const IMAGE_URL = 'https://images.unsplash.com/photo-1614204424926-196a80bf0be8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=334&q=80';
 
+const AVATARS = [
+    require('../../assets/avatars/1.png'),
+    require('../../assets/avatars/2.png'),
+    require('../../assets/avatars/3.png'),
+    require('../../assets/avatars/4.png'),
+    require('../../assets/avatars/5.png'),
+];
 
 const Home = () => {
     let addModalRef = useRef(null);
     let moreModalRef = useRef(null);
+
     const navigation = useNavigation();
+
+    const name = useSelector(state => state.user.name);
+    const avatar = useSelector(state => state.user.avatar);
 
     useEffect(() => {
         navigation.setOptions({
@@ -60,9 +71,9 @@ const Home = () => {
             <View style={styles.screen}>
                 <View style={styles.home_header}>
                     <View style={styles.header_greeting}>
-                        <Image source={{ uri: IMAGE_URL }} style={styles.profile_image} />
+                        <Image source={AVATARS[avatar - 1]} style={styles.profile_image} />
                         <View style={styles.welcome_text}>
-                            <Text style={styles.name_text}>Hi, Jiff Kimson</Text>
+                            <Text style={styles.name_text}>Hi, {name}</Text>
                             <Text style={styles.greeting_text}>You have 15 tasks pending</Text>
                         </View>
                     </View>
@@ -141,5 +152,5 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Home;
+export default memo(Home);
 

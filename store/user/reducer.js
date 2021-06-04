@@ -7,7 +7,7 @@ const initialState = {
     _id: null,
     email: null,
     name: null,
-    avatar: 0,
+    avatar: 1,
     error: null,
     loading: false
 }

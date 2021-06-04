@@ -13,7 +13,7 @@ import {
     Animated,
     Easing,
     Keyboard,
-    Platform
+    ToastAndroid
 } from 'react-native';
 
 import AvatarOne from '../../assets/avatars/1.svg';
@@ -22,6 +22,9 @@ import AvatarThree from '../../assets/avatars/3.svg';
 import AvatarFour from '../../assets/avatars/4.svg';
 import AvatarFive from '../../assets/avatars/5.svg';
 import NextArrow from '../../assets/icons/NextArrow.svg';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { updateProfile } from '../../store/user/action';
 
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
 
@@ -49,21 +52,36 @@ const AVATARS = [
 ];
 
 const PostRegister = () => {
-    const navigation = useNavigation();
     const scale = useRef(new Animated.Value(0)).current;
-    const [avatar, setAvatar] = useState(AVATARS[0].id);
-    const [isLoading, setIsLoading] = useState(false);
+
+    const navigation = useNavigation();
+    const dispatch = useDispatch();
+
+    const savedName = useSelector(state => state.user.name);
+    const loading = useSelector(state => state.user.loading);
+    const tokens = useSelector(state => state.auth.tokens);
+
+    const [avatar, setAvatar] = useState(0);
+    const [name, setName] = useState("");
+
+    const errorHandler = (error) => {
+        ToastAndroid.show(error, ToastAndroid.SHORT);
+    }
+
+    const goHome = () => {
+        navigation.dispatch(StackActions.replace('Home'));
+    }
 
     const selectAvatar = (id) => {
         setAvatar(id);
     }
 
     const nextHandler = () => {
-        setIsLoading(true);
-        setTimeout(() => {
-            setIsLoading(false);
-            navigation.dispatch(StackActions.replace('Home'));
-        }, 2000);
+        if (name === "") {
+            dispatch(updateProfile(savedName, avatar, tokens, goHome, errorHandler));
+        } else {
+            dispatch(updateProfile(name, avatar, tokens, goHome, errorHandler));
+        }
     }
 
     const lineAnimation = (to) => {
@@ -76,7 +94,7 @@ const PostRegister = () => {
     }
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+        <KeyboardAvoidingView>
             <TouchableOpacity activeOpacity={1} style={styles.screen} onPress={() => Keyboard.dismiss()}>
                 <View style={styles.greetings}>
                     <Text style={styles.greetings_text_1}>Hello 👋</Text>
@@ -107,22 +125,25 @@ const PostRegister = () => {
                     </View>
                     <View style={styles.input_wrapper}>
                         <TextInput
+                            value={name}
                             style={styles.name_input}
                             placeholder="What's your name?"
                             placeholderTextColor="#b2bec3"
                             spellCheck={false}
                             onFocus={() => lineAnimation(1).start()}
                             onBlur={() => lineAnimation(0).start()}
+                            onChangeText={(text) => setName(text)}
                         />
                         <View style={styles.underline} >
                             <Animated.View style={[styles.underline_active, { transform: [{ scaleX: scale }] }]} />
                         </View>
                     </View>
+                    <Text style={styles.default}>Default name: {savedName}</Text>
                 </View>
                 <View style={{ width: '100%', alignItems: 'center' }}>
                     <TouchableOpacity activeOpacity={0.8} style={styles.next_button} onPress={nextHandler}>
                         {
-                            (isLoading) ?
+                            (loading) ?
                                 <MaterialIndicator color="#f4f4f4" /> :
                                 <NextArrow width={15} />
                         }
@@ -153,7 +174,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#636e72',
         textAlignVertical: 'bottom',
-        paddingBottom: 10
+        paddingBottom:8,
     },
     underline: {
         width: '100%',
@@ -208,6 +229,13 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 2,
         backgroundColor: '#a29bfe',
+    },
+    default: {
+        paddingHorizontal: 24,
+        fontSize: 12,
+        fontFamily: 'Lato-Regular',
+        color: '#a29bfe',
+        marginTop: 6
     }
 });
 

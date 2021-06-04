@@ -1,4 +1,6 @@
-import { UPDATE_PROFILE_REQUEST, UPDATE_USER } from './type';
+import Axios from 'axios';
+import { call } from 'react-native-reanimated';
+import { UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS, UPDATE_PROFILE_ERROR, UPDATE_USER } from './type';
 
 export const updateUser = (user) => {
     return {
@@ -13,7 +15,7 @@ const updateProfileRequest = () => {
     }
 }
 
-const updateProfileSuccess = (name,avatar) => {
+const updateProfileSuccess = (name, avatar) => {
     return {
         type: UPDATE_PROFILE_SUCCESS,
         name: name,
@@ -28,11 +30,32 @@ const updateProfileError = (error) => {
     }
 }
 
-export const updateProfile = (name, avatar, callback, error) => {
+export const updateProfile = (name, avatar, tokens, callback, error) => {
     return (dispatch) => {
-        dispatch(updateProfileRequest);
-        // TODO: Axios request here after adding backend endpoint.
-        dispatch(updateProfileSuccess(name,avatar));
-        callback();
+        const data = {
+            name,
+            avatar
+        };
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${tokens.access}`
+            }
+        }
+
+        dispatch(updateProfileRequest());
+        Axios.post('http://localhost:8000/user/update', data, config)
+            .then(res => {
+                console.log("s");
+                dispatch(updateProfileSuccess(name, avatar));
+                callback();
+            })
+            .catch(err => {
+                console.log("e");
+                console.log(err);
+                const error = err.response.data.error;
+                dispatch(updateProfileError(error.message));
+                error(error.message);
+            })
     }
 }

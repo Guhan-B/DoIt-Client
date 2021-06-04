@@ -10,27 +10,29 @@ import {
     Dimensions
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 import Plus from '../../../assets/icons/Plus.png';
-import DATA from '../../../assets/data/logs';
 
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
 
 const MyLogsTab = ({ openModel }) => {
     const y = useRef(new Animated.Value(90)).current;
     const AddButton = Animated.createAnimatedComponent(TouchableOpacity);
-    const navigation = useNavigation();
     const animateButton = (to) => Animated.timing(y, {
         toValue: to,
         useNativeDriver: false,
         duration: 60
     });
 
+    const navigation = useNavigation();
+
+    const logs = useSelector(state => state.log.logs);
 
     return (
         <View style={{ flex: 1, backgroundColor: 'transparent' }} >
             <FlatList
-                data={DATA}
+                data={logs}
                 overScrollMode="never"
                 contentContainerStyle={{
                     paddingBottom: 74
@@ -47,11 +49,13 @@ const MyLogsTab = ({ openModel }) => {
                         <View style={{ height: 1, width: WIDTH, backgroundColor: '#E5E5E5' }}></View>
                     );
                 }}
-                renderItem={({ item }) => <LogItem
-                    name={item.name}
-                    description={item.description}
-                    count={item.tasks.length}
+                renderItem={({ item, index }) => <LogItem
+                    id={item.id}
+                    index={index}
+                    title={item.title}
+                    note={item.note}
                     navigation={navigation}
+                    tasks={item.tasks}
                 />}
             />
             <AddButton activeOpacity={0.8} style={{ ...styles.add_log_button, bottom: y }} onPress={openModel}>
@@ -61,12 +65,39 @@ const MyLogsTab = ({ openModel }) => {
     )
 };
 
-const LogItem = ({ name, count, description, progress, navigation }) => {
+const LogItem = ({ id, index, title, note, navigation, tasks }) => {
 
+    const value = useRef(new Animated.Value(0)).current;
 
     const onLogPress = () => {
-        navigation.navigate("Tasks");
+        navigation.navigate("Tasks", {
+            id,
+            index,
+            title,
+        });
     }
+
+    let progress;
+    const completedCount = tasks.filter(task => task.completed).length;
+    const pendingCount = tasks.filter(task => !task.completed).length;
+    const total = tasks.length;
+
+    if (total === 0) {
+        progress = 0;
+    } else if (completedCount === 0) {
+        progress = 0;
+    } else if (pendingCount === 0) {
+        progress = 100;
+    } else {
+        progress = completedCount / total * 100;
+    }
+
+    value.setValue(progress);
+
+    const width = value.interpolate({
+        inputRange: [0, 100],
+        outputRange: [0, WIDTH - 24]
+    });
 
     return (
         <TouchableOpacity onPress={onLogPress} activeOpacity={1} style={styles.log}>
@@ -76,7 +107,7 @@ const LogItem = ({ name, count, description, progress, navigation }) => {
                 color: '#2d3436',
                 marginBottom: 5
             }}>
-                {name}
+                {title}
             </Text>
             <Text style={{
                 fontFamily: 'Lato-Bold',
@@ -84,7 +115,7 @@ const LogItem = ({ name, count, description, progress, navigation }) => {
                 color: '#6c5ce7',
                 marginBottom: 12
             }}>
-                {count} Tasks
+                {tasks.length} Tasks
             </Text>
             <Text style={{
                 fontFamily: 'Lato-Regular',
@@ -93,7 +124,7 @@ const LogItem = ({ name, count, description, progress, navigation }) => {
                 marginBottom: 16,
                 lineHeight: 17
             }}>
-                {description}
+                {note}
             </Text>
             <Text style={{
                 fontFamily: 'Lato-Bold',
@@ -101,9 +132,9 @@ const LogItem = ({ name, count, description, progress, navigation }) => {
                 color: '#636e72',
                 textAlign: 'right',
                 marginBottom: 6
-            }}>34%</Text>
+            }}>{Math.floor(progress)}%</Text>
             <View style={styles.progress_bar}>
-                <View style={styles.progress}></View>
+                <Animated.View style={{ ...styles.progress, width }}></Animated.View>
             </View>
         </TouchableOpacity>
     );
@@ -119,11 +150,10 @@ const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: '#dfe6e9',
         borderRadius: 10,
-        overflow: 'hidden'
+        overflow: 'hidden',
     },
     progress: {
         height: 4,
-        width: '40%',
         backgroundColor: '#a29bfe',
         borderRadius: 10,
     },

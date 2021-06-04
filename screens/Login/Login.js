@@ -25,8 +25,8 @@ const darkCutHeight = 200;
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
 
 const Login = () => {
-    const [email, setEmail] = useState("bkguhan2001@gmail.com");
-    const [password, setPassword] = useState("111111");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const emailRef = useRef(null);
     const passwordRef = useRef(null);

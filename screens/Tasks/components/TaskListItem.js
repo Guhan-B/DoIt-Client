@@ -9,8 +9,9 @@ import Swipeable from 'react-native-swipeable';
 
 import Delete from '../../../assets/icons/DeleteWhite.png';
 import Done from '../../../assets/icons/Done.png';
+import Undo from '../../../assets/icons/Undo.png';
 
-const TaskListItem = ({ name, date, id, priority }) => {
+const TaskListItem = ({ name, date, id, priority, completed }) => {
     let color;
 
     if (priority === 0) {
@@ -32,14 +33,27 @@ const TaskListItem = ({ name, date, id, priority }) => {
         </View>
         ;
 
-    const leftContent =
-        <View style={styles.leftActionWrapper}>
-            <View style={styles.leftAction}>
-                <Image source={Done} style={{ height: 20, width: 20 }} resizeMode="center" />
-                <Text style={{ fontFamily: 'Lato-Bold', fontSize: 11, color: '#f4f4f4', marginTop: 6 }}>DONE</Text>
+    let leftContent;
+
+    if (!completed) {
+        leftContent =
+            <View style={styles.leftActionWrapper}>
+                <View style={styles.leftAction}>
+                    <Image source={Done} style={{ height: 20, width: 20 }} resizeMode="center" />
+                    <Text style={{ fontFamily: 'Lato-Bold', fontSize: 11, color: '#f4f4f4', marginTop: 6 }}>DONE</Text>
+                </View>
             </View>
-        </View>
-        ;
+            ;
+    } else {
+        leftContent =
+            <View style={{...styles.leftActionWrapper, backgroundColor:'#636e72'}}>
+                <View style={styles.leftAction}>
+                    <Image source={Undo} style={{ height: 20, width: 20 }} resizeMode="center" />
+                    <Text style={{ fontFamily: 'Lato-Bold', fontSize: 11, color: '#f4f4f4', marginTop: 6 }}>UNDO</Text>
+                </View>
+            </View>
+            ;
+    }
 
     const onLeftActionRelease = () => {
         console.log("left done");
@@ -51,7 +65,7 @@ const TaskListItem = ({ name, date, id, priority }) => {
 
     return (
         <Swipeable {...{ leftContent, rightContent, onLeftActionRelease, onRightActionRelease }} >
-            <View style={{ ...styles.task, borderLeftColor: color}}>
+            <View style={{ ...styles.task, borderLeftColor: color }}>
                 <Text style={{ fontFamily: 'Lato-Bold', fontSize: 15, color: '#2d3436' }}>{name}</Text>
                 <Text style={{ fontFamily: 'Lato-Regular', fontSize: 12, textAlign: 'right', color: '#636e72' }}>
                     24th Dec 2020

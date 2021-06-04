@@ -5,11 +5,13 @@ import thunk from 'redux-thunk';
 import userReducer from './user/reducer';
 import authenticationReducer from './authentication/reducer';
 import verificationReducer from './verification/reducer';
+import logReducer from './logs/reducer';
 
 const rootReducer = combineReducers({
     user: userReducer,
     auth: authenticationReducer,
-    verify: verificationReducer
+    verify: verificationReducer,
+    log: logReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(thunk));

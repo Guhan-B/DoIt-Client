@@ -19,9 +19,9 @@ const Register = () => {
     const passwordRef = useRef(null);
     const confirmPasswordRef = useRef(null);
 
-    const [email, setEmail] = useState("bkguhan2001@gmail.com");
-    const [password, setPassword] = useState("111111");
-    const [confirmPassword, setConfirmPassword] = useState("111111");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
 
     const navigation = useNavigation();
     const dispatch = useDispatch();
