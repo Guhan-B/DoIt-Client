@@ -42,6 +42,7 @@ export const updateRefreshToken = (token) => {
 }
 
 export const updateAuthState = (state) => {
+    console.log("action" ,state);
     return {
         type: UPDATE_AUTH_STATE,
         state: state

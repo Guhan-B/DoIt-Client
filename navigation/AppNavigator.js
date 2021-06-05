@@ -3,8 +3,8 @@ import { Image } from 'react-native';
 import { createStackNavigator, CardStyleInterpolators, } from '@react-navigation/stack';
 import { NavigationContainer, } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
+import SplashScreen from 'react-native-splash-screen';
 
-import SplashScreen from '../screens/Splash/Splash';
 import HomeScreen from '../screens/Home/Home';
 import TasksScreen from '../screens/Tasks/Tasks';
 import RegisterScreen from '../screens/Register/Register';
@@ -58,9 +58,6 @@ const appScreens = () => {
     );
 }
 
-
-
-
 export default RootNavigator = () => {
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
     const loadingApp = useSelector(state => state.app.loading);
@@ -72,8 +69,10 @@ export default RootNavigator = () => {
     }, [])
 
     useEffect(() => {
-        console.log(isAuthenticated);
-    }, [isAuthenticated]);
+        if(!loadingApp){
+            SplashScreen.hide();
+        }
+    }, [loadingApp]);
 
     return (
         <NavigationContainer>
@@ -82,7 +81,7 @@ export default RootNavigator = () => {
 
                 screenOptions={{ cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}
             >
-                {(loadingApp) ? splashScreen() : (isAuthenticated) ? appScreens() : authScreens()}
+                {(isAuthenticated) ? appScreens() : authScreens()}
             </RootStack.Navigator>
         </NavigationContainer>
     );

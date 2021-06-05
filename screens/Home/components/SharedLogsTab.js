@@ -8,7 +8,6 @@ import gearAnimation from '../../../assets/lottie/gears.json';
 
 
 const SharedLogsTab = () => {
-    console.log(gearAnimation);
     return (
         <View style={{ flex: 1, alignItems: 'center', paddingTop: 100 }}>
             <View style={{ width: 60, height: 120 }}>

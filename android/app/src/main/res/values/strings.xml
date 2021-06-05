@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">DoitClientApp</string>
+    <string name="app_name">DoIt</string>
+    <string name="app_splash_screen_icons">App splash screen icons</string>
 </resources>

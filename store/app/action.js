@@ -2,6 +2,7 @@ import { APP_RUNNING, APP_STARTING } from './type';
 import { updateAccessToken, updateRefreshToken, updateAuthState } from '../authentication/action';
 import { updateUser } from '../user/action';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Axios from 'axios';
 
 const appStarting = () => {
     return {
@@ -23,12 +24,9 @@ export const start = () => {
             const jsonTokens = await AsyncStorage.getItem("@tokens");
             const tokens = JSON.parse(jsonTokens);
 
-            if (tokens && tokens.refresh) {
+            if (tokens) {
                 const jsonUser = await AsyncStorage.getItem("@user");
                 const user = JSON.parse(jsonUser);
-
-                console.log("you can go in directly");
-                console.log(user, tokens);
 
                 const res = await Axios.post(
                     "http://localhost:8000/auth/refresh",
@@ -36,10 +34,10 @@ export const start = () => {
                     { headers: { Authorization: `Bearer ${tokens.refresh}` } }
                 );
 
+                dispatch(updateAuthState(true));
                 dispatch(updateRefreshToken(tokens.refresh));
                 dispatch(updateAccessToken(res.data.accessToken, res.data.expiresAt));
                 dispatch(updateUser(user));
-                dispatch(updateAuthState(true));
                 dispatch(appRunning());
             } else {
                 dispatch(updateAuthState(false));

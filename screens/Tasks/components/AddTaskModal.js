@@ -51,7 +51,6 @@ const AddLogModal = ({ setRef, close }) => {
 
 
     const createHandler = () => {
-        console.log(name, priority, date);
         close();
     }
 
