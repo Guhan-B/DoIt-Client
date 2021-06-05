@@ -1,4 +1,5 @@
 import Axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
     AUTH_REQUEST, AUTH_SUCCESS, AUTH_ERROR,
@@ -68,28 +69,39 @@ export const register = (credentials, callback, error) => {
 }
 
 export const login = (credentials, callback, error) => {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch(authRequest());
-        Axios.post('http://localhost:8000/auth/login', { ...credentials })
-            .then(res => {
-                const user = res.data.user;
+        try {
+            const res = await Axios.post('http://localhost:8000/auth/login', { ...credentials });
 
-                dispatch(updateUser(user));
+            const user = res.data.user;
 
-                if (res.data.verified) {
-                    dispatch(updateRefreshToken(res.data.refreshToken));
-                    dispatch(updateAccessToken(res.data.accessToken, res.data.expiresAt));
-                    dispatch(authSuccess());
-                    dispatch(updateAuthState(true));
-                } else {
-                    dispatch(authSuccess());
-                    callback();
-                }
-            }).catch(e => {
-                const err = e.response.data.error;
-                dispatch(authError(err.message));
-                error(err.message);
-            })
+            dispatch(updateUser(user));
+
+            if (res.data.verified) {
+                const tokens = {
+                    refresh: res.data.refreshToken,
+                    access: res.data.accessToken,
+                    expiresAt: res.data.expiresAt
+                };
+                const jsonTokens = JSON.stringify(tokens);
+                const jsonUser = JSON.stringify(user);
+                await AsyncStorage.setItem("@tokens", jsonTokens);
+                await AsyncStorage.setItem("@user", jsonUser);
+
+                dispatch(updateRefreshToken(res.data.refreshToken));
+                dispatch(updateAccessToken(res.data.accessToken, res.data.expiresAt));
+                dispatch(authSuccess());
+                dispatch(updateAuthState(true));
+            } else {
+                dispatch(authSuccess());
+                callback();
+            }
+        } catch (e) {
+            const err = e.response.data.error;
+            dispatch(authError(err.message));
+            error(err.message);
+        }
     }
 }
 
@@ -97,20 +109,24 @@ export const logout = (access, refresh, error) => {
     const data = { refreshToken: refresh };
     const headers = { Authorization: `Bearer ${access}` };
 
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch(authRequest());
-        Axios.delete('http://localhost:8000/auth/logout', { data, headers })
-            .then((res) => {
-                dispatch(updateRefreshToken(null));
-                dispatch(updateAccessToken(null, null));
-                dispatch(updateUser(null));
-                dispatch(authSuccess());
-                dispatch(updateAuthState(false));
-            })
-            .catch((err) => {
-                const error = err.response.data.error;
-                dispatch(authError(error.message));
-                dispatch(updateAuthState(false));
-            });
+        try {
+            const res = await Axios.delete('http://localhost:8000/auth/logout', { data, headers });
+
+            await AsyncStorage.removeItem("@tokens");
+            await AsyncStorage.removeItem("@user");
+
+            dispatch(updateRefreshToken(null));
+            dispatch(updateAccessToken(null, null));
+            dispatch(updateUser(null));
+            dispatch(authSuccess());
+            dispatch(updateAuthState(false));
+        } catch (e) {
+            const error = err.response.data.error;
+            dispatch(authError(error.message));
+            dispatch(updateAuthState(false));
+
+        }
     }
 }

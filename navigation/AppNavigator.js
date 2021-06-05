@@ -1,24 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import { TouchableOpacity, Image } from 'react-native';
+import React, { useEffect } from 'react';
+import { Image } from 'react-native';
 import { createStackNavigator, CardStyleInterpolators, } from '@react-navigation/stack';
 import { NavigationContainer, } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
-import { createNativeStackNavigator } from 'react-native-screens/native-stack';
+import { useSelector, useDispatch } from 'react-redux';
 
-
+import SplashScreen from '../screens/Splash/Splash';
 import HomeScreen from '../screens/Home/Home';
 import TasksScreen from '../screens/Tasks/Tasks';
 import RegisterScreen from '../screens/Register/Register';
 import LoginScreen from '../screens/Login/Login';
 import PostRegisterScreen from '../screens/PostRegister/PostRegister';
 import EmailVerificationScreen from '../screens/EmailVerification/EmailVerification';
-
 import BackBlack from '../assets/icons/BackArrowBlack.png';
+import { start } from '../store/app/action';
 
 const RootStack = createStackNavigator();
-// const RootStack = createNativeStackNavigator();
 
-// NativeRootStack.
+const splashScreen = () => {
+    return (
+        <>
+            <RootStack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }}/>
+        </>
+    );
+}
 
 const authScreens = () => {
     return (
@@ -58,8 +62,14 @@ const appScreens = () => {
 
 
 export default RootNavigator = () => {
-
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+    const loadingApp = useSelector(state => state.app.loading);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(start());
+    }, [])
 
     useEffect(() => {
         console.log(isAuthenticated);
@@ -72,7 +82,7 @@ export default RootNavigator = () => {
 
                 screenOptions={{ cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS }}
             >
-                {(isAuthenticated) ? appScreens() : authScreens()}
+                {(loadingApp) ? splashScreen() : (isAuthenticated) ? appScreens() : authScreens()}
             </RootStack.Navigator>
         </NavigationContainer>
     );
