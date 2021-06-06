@@ -27,10 +27,11 @@ const authError = (error) => {
     }
 }
 
-export const updateAccessToken = (token) => {
+export const updateAccessToken = (token,expiresAt) => {
     return {
         type: UPDATE_ACCESS_TOKEN,
         token: token,
+        expiresAt: expiresAt,
     }
 }
 
@@ -42,7 +43,6 @@ export const updateRefreshToken = (token) => {
 }
 
 export const updateAuthState = (state) => {
-    console.log("action" ,state);
     return {
         type: UPDATE_AUTH_STATE,
         state: state
@@ -50,22 +50,24 @@ export const updateAuthState = (state) => {
 }
 
 export const register = (credentials, callback, error) => {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch(authRequest());
-        Axios.post('http://localhost:8000/auth/register', { ...credentials })
-            .then(res => {
-                const user = res.data.user;
+        try {
+            const res = await Axios.post('http://localhost:8000/auth/register', { ...credentials });
+            const user = res.data.user;
+            const jsonUser = JSON.stringify(user);
 
-                dispatch(updateUser(user));
-                dispatch(authSuccess());
+            dispatch(updateUser(user));
+            dispatch(authSuccess());
 
-                callback();
-            }).catch(e => {
-                console.log(e);
-                const err = e.response.data.error;
-                dispatch(authError(err.message));
-                error(err.message);
-            })
+            await AsyncStorage.setItem("@user", jsonUser);
+
+            callback();
+        } catch (e) {
+            const err = e.response.data.error;
+            dispatch(authError(err.message));
+            error(err.message);
+        }
     }
 }
 
@@ -74,10 +76,12 @@ export const login = (credentials, callback, error) => {
         dispatch(authRequest());
         try {
             const res = await Axios.post('http://localhost:8000/auth/login', { ...credentials });
-
             const user = res.data.user;
+            const jsonUser = JSON.stringify(user);
 
             dispatch(updateUser(user));
+
+            await AsyncStorage.setItem("@user", jsonUser);
 
             if (res.data.verified) {
                 const tokens = {
@@ -85,10 +89,9 @@ export const login = (credentials, callback, error) => {
                     access: res.data.accessToken,
                     expiresAt: res.data.expiresAt
                 };
+
                 const jsonTokens = JSON.stringify(tokens);
-                const jsonUser = JSON.stringify(user);
                 await AsyncStorage.setItem("@tokens", jsonTokens);
-                await AsyncStorage.setItem("@user", jsonUser);
 
                 dispatch(updateRefreshToken(res.data.refreshToken));
                 dispatch(updateAccessToken(res.data.accessToken, res.data.expiresAt));
@@ -127,7 +130,6 @@ export const logout = (access, refresh, error) => {
             const error = err.response.data.error;
             dispatch(authError(error.message));
             dispatch(updateAuthState(false));
-
         }
     }
 }

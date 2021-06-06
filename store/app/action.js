@@ -11,6 +11,7 @@ const appStarting = () => {
 }
 
 const appRunning = () => {
+    console.log("running");
     return {
         type: APP_RUNNING
     };
@@ -18,7 +19,6 @@ const appRunning = () => {
 
 export const start = () => {
     return async (dispatch) => {
-        console.log("Hello");
         dispatch(appStarting());
         try {
             const jsonTokens = await AsyncStorage.getItem("@tokens");
@@ -33,17 +33,19 @@ export const start = () => {
                     { userId: user._id },
                     { headers: { Authorization: `Bearer ${tokens.refresh}` } }
                 );
-
+                
                 dispatch(updateAuthState(true));
                 dispatch(updateRefreshToken(tokens.refresh));
                 dispatch(updateAccessToken(res.data.accessToken, res.data.expiresAt));
                 dispatch(updateUser(user));
                 dispatch(appRunning());
             } else {
+                console.log("Starting");
                 dispatch(updateAuthState(false));
                 dispatch(appRunning());
             }
         } catch (error) {
+            console.log(error);
             dispatch(updateAuthState(false));
             dispatch(appRunning());
         }

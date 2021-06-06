@@ -35,7 +35,6 @@ const Login = () => {
     const dispatch = useDispatch();
 
     const loading = useSelector(state => state.auth.loading);
-    const error = useSelector(state => state.auth.error);
 
     const errorHandler = (error) => {
         ToastAndroid.show(error, ToastAndroid.SHORT);

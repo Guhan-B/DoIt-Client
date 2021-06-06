@@ -1,5 +1,6 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Axios from 'axios';
-import { call } from 'react-native-reanimated';
+
 import { UPDATE_PROFILE_REQUEST, UPDATE_PROFILE_SUCCESS, UPDATE_PROFILE_ERROR, UPDATE_USER } from './type';
 
 export const updateUser = (user) => {
@@ -31,31 +32,28 @@ const updateProfileError = (error) => {
 }
 
 export const updateProfile = (name, avatar, tokens, callback, error) => {
-    return (dispatch) => {
-        const data = {
-            name,
-            avatar
-        };
-
-        const config = {
-            headers: {
-                Authorization: `Bearer ${tokens.access}`
-            }
-        }
+    return async (dispatch) => {
+        const data = { name, avatar };
+        const config = { headers: { Authorization: `Bearer ${tokens.access}` } }
 
         dispatch(updateProfileRequest());
-        Axios.post('http://localhost:8000/user/update', data, config)
-            .then(res => {
-                console.log("s");
-                dispatch(updateProfileSuccess(name, avatar));
-                callback();
-            })
-            .catch(err => {
-                console.log("e");
-                console.log(err);
-                const error = err.response.data.error;
-                dispatch(updateProfileError(error.message));
-                error(error.message);
-            })
+
+        try {
+            const res = await Axios.post('http://localhost:8000/user/update', data, config);
+            const storedUser = await AsyncStorage.getItem("@user");
+            const user = JSON.parse(storedUser);
+
+            user.name = name;
+            user.avatar = avatar;
+
+            await AsyncStorage.setItem("@user", JSON.stringify(user));
+
+            dispatch(updateProfileSuccess(name, avatar));
+            callback();
+        } catch (err) {
+            const error = err.response.data.error;
+            dispatch(updateProfileError(error.message));
+            error(error.message);
+        }
     }
 }

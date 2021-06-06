@@ -5,6 +5,7 @@ import {
     VERIFY_OTP_REQUEST, VERIFY_OTP_SUCCESS, VERIFY_OTP_ERROR
 } from './type';
 import { updateAuthState, updateAccessToken, updateRefreshToken } from '../authentication/action';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const generateOTPRequest = () => {
     return {
@@ -48,36 +49,42 @@ const verifyOTPError = (error) => {
 }
 
 export const generateOTP = (userId) => {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch(generateOTPRequest());
+        try {
+            const res = await Axios.post('http://localhost:8000/auth/generateOTP', { userId })
+            dispatch(generateOTPSuccess(res.data.verificationId, res.data.validity));
 
-        Axios.post('http://localhost:8000/auth/generateOTP', { userId })
-            .then(res => {
-                dispatch(generateOTPSuccess(res.data.verificationId, res.data.validity));
-            })
-            .catch(err => {
-                const error = err.response.data.error;
-                dispatch(generateOTPError(error.message));
-            });
+        } catch (err) {
+            const error = err.response.data.error;
+            dispatch(generateOTPError(error.message));
+        }
     }
 }
 
 export const verifyOTP = (verificationId, OTP, callback) => {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch(verifyOTPRequest());
+        try {
+            const res = await Axios.post('http://localhost:8000/auth/verifyOTP', { verificationId, OTP });
+            const tokens = {
+                refresh: res.data.refreshToken,
+                access: res.data.accessToken,
+                expiresAt: res.data.expiresAt
+            };
+            const jsonTokens = JSON.stringify(tokens);
 
-        Axios.post('http://localhost:8000/auth/verifyOTP', { verificationId, OTP })
-            .then(res => {
-                console.log("success");
-                dispatch(verifyOTPSuccess());
-                dispatch(updateRefreshToken(res.data.refreshToken));
-                dispatch(updateAccessToken(res.data.accessToken, res.data.expiresAt));
-                dispatch(updateAuthState(true));
-                callback();
-            })
-            .catch(err => {
-                const error = err.response.data.error;
-                dispatch(verifyOTPError(error.message));
-            });
+            await AsyncStorage.setItem("@tokens", jsonTokens);
+
+            dispatch(verifyOTPSuccess());
+            dispatch(updateRefreshToken(tokens.refresh));
+            dispatch(updateAccessToken(tokens.access, tokens.expiresAt));
+            dispatch(updateAuthState(true));
+
+            callback();
+        } catch (err) {
+            const error = err.response.data.error;
+            dispatch(verifyOTPError(error.message));
+        }
     }
 }

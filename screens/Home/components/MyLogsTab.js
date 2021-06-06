@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
     View,
     Text,
@@ -7,12 +7,14 @@ import {
     Image,
     StyleSheet,
     TouchableOpacity,
-    Dimensions
+    Dimensions,
+    ToastAndroid
 } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Plus from '../../../assets/icons/Plus.png';
+import { fetchLogs } from '../../../store/logs/action';
 
 const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
 
@@ -27,7 +29,20 @@ const MyLogsTab = ({ openModel }) => {
 
     const navigation = useNavigation();
 
+    const dispatch = useDispatch();
+
     const logs = useSelector(state => state.log.logs);
+    const tokens = useSelector(state => state.auth.tokens);
+
+    const errorHandler = (error) => {
+        ToastAndroid.show(error, ToastAndroid.SHORT);
+    }
+
+    useEffect(() => {
+        if ((!logs || logs.length === 0) && tokens.access) {
+            dispatch(fetchLogs(tokens, errorHandler));
+        }
+    }, [])
 
     return (
         <View style={{ flex: 1, backgroundColor: 'transparent' }} >
